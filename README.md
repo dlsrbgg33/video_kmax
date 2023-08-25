@@ -65,15 +65,16 @@ pretrained from COCO
 <th valign="bottom">VPQ</th>
 <th valign="bottom">ckpt</th>
 <!-- TABLE BODY -->
- <!-- <tr><td align="left"><a href="./configs/coco/panoptic_segmentation/kmax_r50.yaml">ResNet-50</td> -->
-<tr align="center"> ResNet-50 </td>
+ <tr><td align="left">ResNet-50</td>
+<!-- <tr align="center"> ResNet-50 </td> -->
 <td align="center"> 46.3 </td>
 <td align="center"> 32.4 </td>
 <td align="center"> 38.7 </td>
 <td align="center"> 36.8 </td>
 <td align="center"><a href="https://drive.google.com/drive/folders/1gCbGXrk8LxbX73ZXpFn3DpVbICD3BndA?usp=sharing">download</a></td>
 </tr>
-<tr align="center"> ConvNeXt-Large </td>
+ <tr><td align="left">ConvNeXt-Large</td>
+<!-- <tr align="center"> ConvNeXt-Large </td> -->
 <td align="center"> 60.7 </td>
 <td align="center"> 40.2 </td>
 <td align="center"> 49.4 </td>
@@ -99,13 +100,14 @@ pretrained from Cityscape
 <th valign="bottom">ckpt</th>
 <!-- TABLE BODY -->
  <!-- <tr><td align="left"><a href="./configs/coco/panoptic_segmentation/kmax_r50.yaml">ResNet-50</td> -->
-<tr align="center"> ResNet-50 </td>
+ <tr><td align="left">ResNet-50</td>
 <td align="center"> 74.2 </td>
 <td align="center"> 74.2 </td>
 <td align="center"> 74.2 </td>
 <td align="center"><a href="">download</a></td>
 </tr>
-<tr align="center"> ConvNeXt-Large </td>
+<!-- <tr align="center"> ConvNeXt-Large </td> -->
+ <tr><td align="left">ConvNeXt-Large</td>
 <td align="center"> 79.0 </td>
 <td align="center"> 78.8 </td>
 <td align="center"> 78.9 </td>
@@ -126,13 +128,14 @@ pretrained from Cityscape
 <th valign="bottom">ckpt</th>
 <!-- TABLE BODY -->
  <!-- <tr><td align="left"><a href="./configs/coco/panoptic_segmentation/kmax_r50.yaml">ResNet-50</td> -->
-<tr align="center"> ResNet-50 </td>
+<!-- <tr align="center"> ResNet-50 </td> -->
+ <tr><td align="left">ResNet-50</td>
 <td align="center"> 75.0 </td>
 <td align="center"> 72.0 </td>
 <td align="center"> 73.5 </td>
 <td align="center"><a href="">download</a></td>
 </tr>
-<tr align="center"> ConvNeXt-Large </td>
+ <tr><td align="left">ConvNeXt-Large</td>
 <td align="center"> 77.2 </td>
 <td align="center"> 75.7 </td>
 <td align="center"> 76.5 </td>
