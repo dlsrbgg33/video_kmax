@@ -5,7 +5,7 @@ This is an official implementation of our WACV 2024 paper: [Video-kMaX](https://
 We propose a unified approach for online and near-online VPS. The meta architecture of the proposed Video-kMaX consists of two components: within clip segmenter (for clip-level segmentation) and cross-clip associater (for association beyond clips). We propose clip-kMaX (clip k-means mask transformer) and HiLA-MB (Hierarchical Location-Aware Memory Buffer) to instantiate the segmenter and associater, respectively. Our general formulation includes the online scenario as a special case by adopting clip length of one.
 
 <p align="center">
-   <img src="./docs/video_kmax_teaser_new_v2.pdf" width=450>
+   <iframe src="./docs/video_kmax_teaser_new_v2.pdf" width="100%" height="500" frameborder="0" />
 </p>
 
 ## Installation
