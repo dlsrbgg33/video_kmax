@@ -1,0 +1,24 @@
+_BASE_: kmax_r50.yaml
+MODEL:
+  # backbone part.
+  BACKBONE:
+    NAME: "D2ConvNeXt"
+  # WEIGHTS: "weights/convnext_large_22k_1k_384_new.pkl"
+  WEIGHTS: "weights/vkmax_cocovid_tval_convnext_l.pkl"
+  CONVNEXT:
+    IN_CHANNELS: 3
+    DEPTHS: [3, 3, 27, 3]
+    DIMS: [192, 384, 768, 1536]
+    # https://github.com/google-research/deeplab2/blob/main/configs/coco/kmax_deeplab/kmax_meta_convnext_large_os32.textproto#L28
+    DROP_PATH_RATE: 0.6
+    OUT_INDICES: [0, 1, 2, 3]
+DATASETS:
+  TRAIN: ("coco_2017_train_panoptic", "coco_2017_val_panoptic")
+  TEST: ("coco_2017_val_panoptic",)
+SOLVER:
+  IMS_PER_BATCH: 8
+  MAX_ITER: 300000
+  AMP:
+    ENABLED: True # To be explored
+# OUTPUT_DIR: "outputs/coco_video_vkmax_convnext_large_300k"
+OUTPUT_DIR: "outputs/coco_tf2_pretrained_vis_test_cocovid"

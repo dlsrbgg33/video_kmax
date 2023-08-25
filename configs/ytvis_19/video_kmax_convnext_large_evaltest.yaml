@@ -1,0 +1,33 @@
+_BASE_: video_kmax_r50.yaml
+MODEL:
+  # backbone part.
+  BACKBONE:
+    NAME: "D2ConvNeXt"
+  WEIGHTS: "weights/vkmax_convnext_large_cocotval_150k_conv.pkl"
+  CONVNEXT:
+    IN_CHANNELS: 3
+    DEPTHS: [3, 3, 27, 3]
+    DIMS: [192, 384, 768, 1536]
+    # https://github.com/google-research/deeplab2/blob/main/configs/coco/kmax_deeplab/kmax_meta_convnext_large_os32.textproto#L28
+    DROP_PATH_RATE: 0.4
+    OUT_INDICES: [0, 1, 2, 3]
+  VIDEO_KMAX:
+    TEST:
+      USE_CLIP_STITCHING: False
+  KMAX_DEEPLAB:
+    TEST:
+      OBJECT_MASK_THRESHOLD: 0.4
+      CLASS_THRESHOLD_THING: 0.5
+      CLASS_THRESHOLD_STUFF: 0.5
+DATASETS:
+  TRAIN: ("ytvis_2019_train", )
+  TEST: ("ytvis_2019_val",)
+SOLVER:
+  IMS_PER_BATCH: 8
+  MAX_ITER: 30000
+  # AMP:
+  #   ENABLED: True
+INPUT:
+  SAMPLING_FRAME_RANGE: 20
+# OUTPUT_DIR: "outputs/exps_ytvis/near_conv_40k_5train_height_concat_513_897"
+OUTPUT_DIR: "outputs/exps_ytvis/ytvis_convl_30k_mask2former_loss"

@@ -1,0 +1,26 @@
+_BASE_: video_kmax_r50.yaml
+MODEL:
+  # backbone part.
+  BACKBONE:
+    FREEZE_AT: 0
+    NAME: "build_deeplab2_resnet_backbone"
+  WEIGHTS: "weights/from_tf2/vipseg/near_online/resnet50_cocovid/resnet50_cocovid_conv.pkl"
+  VIDEO_KMAX:
+    TEST:
+      USE_CLIP_STITCHING: True
+      LAMB_CONF_THRES: 0.7
+      LAMB_BUFFER_SIZE: 10
+  KMAX_DEEPLAB:
+    TEST:
+      SEMANTIC_ON: False
+      INSTANCE_ON: False # Save some time :)
+      PANOPTIC_ON: True
+      OBJECT_MASK_THRESHOLD: 0.3
+      CLASS_THRESHOLD_THING: 0.5
+      CLASS_THRESHOLD_STUFF: 0.5
+INPUT:
+  SAMPLING_FRAME_NUM: 2
+  TEST_SAMPLING_FRAME_NUM: 2
+SOLVER:
+  MAX_ITER: 80000
+OUTPUT_DIR: "outputs/vipseg/near/r50/r50_hilamb_0710_mask030505"

@@ -1,0 +1,36 @@
+_BASE_: kmax_r50.yaml
+MODEL:
+  # backbone part.
+  BACKBONE:
+    NAME: "D2ConvNeXtTimm"
+  # WEIGHTS: "weights/open_clip_convnext_xxl_convert.pkl"
+  WEIGHTS: "outputs/coco_video_vkmax_convnext_large_from_kmax_150k_renormalize_alltrain_705/model_0039999.pth"
+  CONVNEXT:
+    IN_CHANNELS: 3
+    DEPTHS: [3, 4, 30, 3]
+    DIMS: [384, 768, 1536, 3072]
+    # https://github.com/google-research/deeplab2/blob/main/configs/coco/kmax_deeplab/kmax_meta_convnext_large_os32.textproto#L28
+    DROP_PATH_RATE: 0.6
+    OUT_INDICES: [0, 1, 2, 3]
+DATASETS:
+  TRAIN: ("coco_2017_train_panoptic", "coco_2017_val_panoptic")
+  TEST: ("coco_2017_val_panoptic",)
+SOLVER:
+  IMS_PER_BATCH: 8
+  MAX_ITER: 150000
+  AMP:
+    ENABLED: True # To be explored
+INPUT:
+  IMAGE_SIZE: [833, 833]
+  MIN_SCALE: 0.2
+  MAX_SCALE: 2.0
+  FORMAT: "RGB"
+  DATASET_MAPPER_NAME: "coco_video_panoptic"
+  MIN_SIZE_TEST: 833
+  MAX_SIZE_TEST: 833
+  SAMPLING_FRAME_NUM: 2
+  TEST_SAMPLING_FRAME_NUM: 2
+  # BACKBONE_FREEZE: True
+# OUTPUT_DIR: "outputs/vipseg_video_vkmax_convnext_large_eval_on_val_cocoimg_124_valcheck_postcheck_re"
+# FIND_UNUSED_PARAMETERS: True
+OUTPUT_DIR: "outputs/coco_video_vkmax_convnext_large_from_kmax_150k_renormalize_alltrain_833_retrain"

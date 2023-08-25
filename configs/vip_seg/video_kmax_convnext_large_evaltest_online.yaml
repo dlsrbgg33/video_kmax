@@ -1,0 +1,43 @@
+_BASE_: video_kmax_r50.yaml
+MODEL:
+  # backbone part.
+  BACKBONE:
+    NAME: "D2ConvNeXt"
+  # WEIGHTS: "weights/convnext_large_22k_1k_384_new.pkl"
+  WEIGHTS: "weights/kmax_convnext_large_coco_train_unlabeled_conv.pkl"
+  # WEIGHTS: "outputs/coco_video_vkmax_convnext_large_300k/model_final.pth"
+  # WEIGHTS: "weights/vkmax_cocovid_tval_convnext_l.pkl"
+  CONVNEXT:
+    IN_CHANNELS: 3
+    DEPTHS: [3, 3, 27, 3]
+    DIMS: [192, 384, 768, 1536]
+    # https://github.com/google-research/deeplab2/blob/main/configs/coco/kmax_deeplab/kmax_meta_convnext_large_os32.textproto#L28
+    DROP_PATH_RATE: 0.4
+    OUT_INDICES: [0, 1, 2, 3]
+  VIDEO_KMAX:
+    TEST:
+      USE_CLIP_STITCHING: True
+  KMAX_DEEPLAB:
+    TEST:
+      OBJECT_MASK_THRESHOLD: 0.4
+      CLASS_THRESHOLD_THING: 0.5
+      CLASS_THRESHOLD_STUFF: 0.5
+DATASETS:
+  TRAIN: ("vipseg_train_video_panoptic", )
+  TEST: ("vipseg_val_video_panoptic",)
+SOLVER:
+  IMS_PER_BATCH: 8
+  MAX_ITER: 70000
+INPUT:
+  IMAGE_SIZE: [897, 1601]
+  MIN_SIZE_TEST: 897
+  MAX_SIZE_TEST: 1601
+  SAMPLING_FRAME_NUM: 1
+  TEST_SAMPLING_FRAME_NUM: 1
+# OUTPUT_DIR: "outputs/vipseg_video_vkmax_convnext_large_eval_on_val_cocoimg_124_valcheck_postcheck_re"
+# OUTPUT_DIR: "outputs/vipseg_video_vkmax_convnext_large_eval_on_val_cocoimg_124_after_align_60k_copypast_prob1_mem_test"
+# OUTPUT_DIR: "outputs/vipseg_video_vkmax_convnext_large_eval_on_val_cocoimg_124_after_align_40k_aux_seg_total_mem_test_hungar_0610"
+OUTPUT_DIR: "outputs/exps_vipseg/online_conv_l_from_cocoimgtf2_70k"
+# OUTPUT_DIR: "outputs/vipseg_test_w_vipsegnear_tf_test_on_frame2_after_mod_w_clip_stitch_lamb"
+# OUTPUT_DIR: "outputs/vipseg_video_vkmax_convnext_large_eval_on_val_cocoimg_124_after_align_40k_prev_onlystitching"
+# OUTPUT_DIR: "outputs/vipseg_video_vkmax_convnext_large_eval_on_val_cocoimg_124_after_align_40k_aux_seg_nomem_ablate"

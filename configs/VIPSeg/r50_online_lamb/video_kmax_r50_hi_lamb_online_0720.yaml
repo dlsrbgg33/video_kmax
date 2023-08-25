@@ -1,0 +1,23 @@
+_BASE_: video_kmax_r50.yaml
+MODEL:
+  # WEIGHTS: "weights/from_tf2/vipseg/online/resnet50_cocoimg/resnet50_cocoimg_conv.pkl"
+  WEIGHTS: "weights/from_tf2/vipseg/online/resnet50_cocoimg/resnet50_cocoimg_conv.pkl"
+  VIDEO_KMAX:
+    TEST:
+      USE_CLIP_STITCHING: True
+      LAMB_CONF_THRES: 0.7
+      LAMB_BUFFER_SIZE: 20
+  KMAX_DEEPLAB:
+    TEST:
+      SEMANTIC_ON: False
+      INSTANCE_ON: False # Save some time :)
+      PANOPTIC_ON: True
+      OBJECT_MASK_THRESHOLD: 0.4
+      CLASS_THRESHOLD_THING: 0.5
+      CLASS_THRESHOLD_STUFF: 0.5
+INPUT:
+  SAMPLING_FRAME_NUM: 1
+  TEST_SAMPLING_FRAME_NUM: 1
+SOLVER:
+  MAX_ITER: 50000
+OUTPUT_DIR: "outputs/vipseg/online/r50/r50_hilamb_0720"

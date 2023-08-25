@@ -1,0 +1,41 @@
+_BASE_: video_kmax_r50.yaml
+MODEL:
+  # backbone part.
+  BACKBONE:
+    NAME: "D2ConvNeXt"
+  # WEIGHTS: "outputs/coco_video_vkmax_convnext_large_from_kmax_50kmore_lrdown/model_final.pth"
+  WEIGHTS: "weights/convnext_large_22k_1k_384_new.pkl"
+  CONVNEXT:
+    IN_CHANNELS: 3
+    DEPTHS: [3, 3, 27, 3]
+    DIMS: [192, 384, 768, 1536]
+    # https://github.com/google-research/deeplab2/blob/main/configs/coco/kmax_deeplab/kmax_meta_convnext_large_os32.textproto#L28
+    DROP_PATH_RATE: 0.4
+    OUT_INDICES: [0, 1, 2, 3]
+  VIDEO_KMAX:
+    TEST:
+      USE_CLIP_STITCHING: True
+    SAM_FUSE: False
+  KMAX_DEEPLAB:
+    TEST:
+      OBJECT_MASK_THRESHOLD: 0.4
+      CLASS_THRESHOLD_THING: 0.5
+      CLASS_THRESHOLD_STUFF: 0.5
+INPUT:
+  IMAGE_SIZE: [1024, 1024]
+  MIN_SCALE: 0.5 
+  MAX_SCALE: 2.0
+  FORMAT: "RGB"
+  DATASET_MAPPER_NAME: "vipseg_video_panoptic"
+  MIN_SIZE_TEST: 1024
+  MAX_SIZE_TEST: 1024
+  SAMPLING_FRAME_NUM: 2
+  TEST_SAMPLING_FRAME_NUM: 2
+DATASETS:
+  TRAIN: ("vipseg_train_video_panoptic", )
+  TEST: ("vipseg_val_video_panoptic",)
+SOLVER:
+  IMS_PER_BATCH: 8
+  MAX_ITER: 35000
+# OUTPUT_DIR: "outputs/vipseg_video_vkmax_convnext_large_eval_on_val_cocovid_124_50k_w_sam_fuse_bug_fix"
+OUTPUT_DIR: "outputs/vipseg_video_vkmax_convnext_large_eval_on_val_cocovid_only_sam_w_frozen_35k"

@@ -1,0 +1,33 @@
+_BASE_: video_kmax_r50.yaml
+MODEL:
+  # backbone part.
+  BACKBONE:
+    NAME: "D2ConvNeXt"
+  # WEIGHTS: "weights/convnext_large_22k_1k_384_new.pkl"
+  WEIGHTS: "weights/vkmax_convnext_large_cocotval_150k_conv.pkl"
+  CONVNEXT:
+    IN_CHANNELS: 3
+    DEPTHS: [3, 3, 27, 3]
+    DIMS: [192, 384, 768, 1536]
+    # https://github.com/google-research/deeplab2/blob/main/configs/coco/kmax_deeplab/kmax_meta_convnext_large_os32.textproto#L28
+    DROP_PATH_RATE: 0.4
+    OUT_INDICES: [0, 1, 2, 3]
+  VIDEO_KMAX:
+    TEST:
+      USE_CLIP_STITCHING: True
+  KMAX_DEEPLAB:
+    TEST:
+      OBJECT_MASK_THRESHOLD: 0.3
+      CLASS_THRESHOLD_THING: 0.5
+      CLASS_THRESHOLD_STUFF: 0.5
+INPUT:
+  IMAGE_SIZE: [833, 1409]
+  MIN_SIZE_TEST: 833
+  MAX_SIZE_TEST: 1409
+INPUT:
+  SAMPLING_FRAME_NUM: 2
+  TEST_SAMPLING_FRAME_NUM: 2
+SOLVER:
+  IMS_PER_BATCH: 8
+  MAX_ITER: 30000
+OUTPUT_DIR: "outputs/vipseg/near/conv_l/conv_l_hilamb_0710_mask030505_carturn"
