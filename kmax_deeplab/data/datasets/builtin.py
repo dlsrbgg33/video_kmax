@@ -105,66 +105,44 @@ def register_all_vipseg_video_panoptic_annos_sem_seg(root):
             os.path.join(root, panoptic_json)
         )
 
-        
-from .burst import (
-    register_burst_video_annos_sem_seg,
-    _get_burst_seg_meta
+
+
+from .kitti_step import (
+    register_kitti_panoptic_annos_sem_seg,
+    _get_kitti_seg_meta
 )
 
-# ==== Predefined splits for BURST VIDEO Panoptic datasets ===========
-_PREDEFINED_SPLITS_BURST_VIDEO_PANOPTIC = {
-    "burst_train_video": (
-        "burst/frames/train",
-        "burst/coco_annotations/train.json",
-        "burst/panopRGB_re"
+# ==== Predefined splits for VIPSeg VIDEO Panoptic datasets ===========
+_PREDEFINED_SPLITS_KITTI_VIDEO_PANOPTIC = {
+    "kitti_train_video_panoptic": (
+        # This is the original panoptic annotation directory
+        "kitti-step/train/image_02",
+        # "kitti-step/panoptic_gt_KITTI_val.json",
+        "kitti-step/panoptic_gt_KITTI_val.json",
+        # "kitti-step/panoptic_maps_crowd_mapped_rgb/train",
+        "kitti-step/panoptic_maps_crowd_mapped_rgb_re/train",
     ),
-    "burst_val_video": (
-        "burst/frames/train",
-        "burst/coco_annotations/train.json",
-        "burst/panopRGB_re"
+    "kitti_val_video_panoptic": (
+        "kitti-step/val",
+        # "kitti-step/panoptic_gt_KITTI_val_nocrowded_re.json",
+        "kitti-step/panoptic_gt_KITTI_val_crowded.json",
+        # "kitti-step/panoptic_maps_nocrowd_re/val",
+        "kitti-step/panoptic_maps_crowd_mapped_rgb_re/val",
     ),
 }
-
-def register_all_burst_video_annos_sem_seg(root):
+def register_all_kitti_video_panoptic_annos_sem_seg(root):
     for (
         prefix,
         (image_root, panoptic_json, panoptic_root),
-    ) in _PREDEFINED_SPLITS_BURST_VIDEO_PANOPTIC.items():
-        prefix_instances = prefix[: -len("_video")]
+    ) in _PREDEFINED_SPLITS_KITTI_VIDEO_PANOPTIC.items():
+        prefix_instances = prefix[: -len("_video_panoptic")]
 
-        register_burst_video_annos_sem_seg(
+        register_kitti_panoptic_annos_sem_seg(
             prefix,
-            _get_burst_seg_meta(),
+            _get_kitti_seg_meta(),
             os.path.join(root, image_root),
-            os.path.join(root, panoptic_root),
-            os.path.join(root, panoptic_json)
-        )
-
-from .ytvis import (
-    register_ytvis_instances,
-    _get_ytvis_2019_instances_meta,
-    _get_ytvis_2021_instances_meta,
-)
-
-# ==== Predefined splits for YTVIS 2019 ===========
-_PREDEFINED_SPLITS_YTVIS_2019_MASK = {
-    "ytvis_2019_train": ("ytvis_2019/train/JPEGImages",
-                         "ytvis_2019/train.json"),
-    "ytvis_2019_val": ("ytvis_2019/val/JPEGImages",
-                       "ytvis_2019/valid.json"),
-    "ytvis_2019_test": ("ytvis_2019/test/JPEGImages",
-                        "ytvis_2019/test.json"),
-}
-
-
-def register_all_ytvis_2019_inst_annos_sem_seg(root):
-    for key, (image_root, json_file) in _PREDEFINED_SPLITS_YTVIS_2019_MASK.items():
-        # Assume pre-defined datasets live in `./datasets`.
-        register_ytvis_instances(
-            key,
-            _get_ytvis_2019_instances_meta(),
-            os.path.join(root, json_file) if "://" not in json_file else json_file,
-            os.path.join(root, image_root),
+            os.path.join(root, panoptic_json),
+            os.path.join(root, panoptic_root)
         )
 
 
@@ -175,8 +153,7 @@ if __name__.endswith(".builtin"):
     # COCO
     register_all_coco_panoptic_annos_sem_seg(_root)
     register_all_vipseg_video_panoptic_annos_sem_seg(_root)
-    register_all_ytvis_2019_inst_annos_sem_seg(_root)
     # register_all_burst_video_annos_sem_seg(_root)
-    
+    register_all_kitti_video_panoptic_annos_sem_seg(_root)
     
     
