@@ -20,8 +20,6 @@ Please refer to [Mask2Former's script](https://github.com/facebookresearch/Mask2
 
 ### VIPSeg VPS
 
-pretrained from COCO
-
 #### Near-online (pretrained model: [COCO pseudo video](https://drive.google.com/drive/folders/1CX4V1wYlAPW0vqkMP9tSDlqvjjVy4vWS?usp=sharing))
 
 <table><tbody>
@@ -84,8 +82,6 @@ pretrained from COCO
 
 ### KITTI-STEP VPS
 
-pretrained from Cityscape
-
 #### Near-online (pretrained model: [Cityscape](https://drive.google.com/drive/folders/1u-VBjkrPRP2NiFOVF15Lmd01ZDALVwsx?usp=sharing))
 
 <table><tbody>
@@ -144,8 +140,6 @@ pretrained from Cityscape
 
 If you find this code helpful in your research or wish to refer to the baseline
 results, please use the following BibTeX entry.
-
-*   Video-kMaX:
 
 (current BibTeX is for arxiv. We will replace it with WACV version after proceeding)
 
