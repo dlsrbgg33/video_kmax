@@ -22,8 +22,7 @@ Please refer to [Mask2Former's script](https://github.com/facebookresearch/Mask2
 
 pretrained from COCO
 
-#### Near-online
-(pretrained model: (COCO pseudo video)[https://drive.google.com/drive/folders/1CX4V1wYlAPW0vqkMP9tSDlqvjjVy4vWS?usp=sharing])
+#### Near-online (pretrained model: [COCO pseudo video](https://drive.google.com/drive/folders/1CX4V1wYlAPW0vqkMP9tSDlqvjjVy4vWS?usp=sharing))
 
 <table><tbody>
 <!-- START TABLE -->
@@ -36,14 +35,15 @@ pretrained from COCO
 <th valign="bottom">ckpt</th>
 <!-- TABLE BODY -->
  <!-- <tr><td align="left"><a href="./configs/coco/panoptic_segmentation/kmax_r50.yaml">ResNet-50</td> -->
-<tr align="center"> ResNet-50 </td>
+ <tr><td align="left">ResNet-50</td>
 <td align="center"> 45.1 </td>
 <td align="center"> 35.3 </td>
 <td align="center"> 39.9 </td>
 <td align="center"> 38.2 </td>
 <td align="center"><a href="https://drive.google.com/drive/folders/1gCbGXrk8LxbX73ZXpFn3DpVbICD3BndA?usp=sharing">download</a></td>
 </tr>
-<tr align="center"> ConvNeXt-Large </td>
+<!-- <tr align="center"> ConvNeXt-Large </td> -->
+ <tr><td align="left">ConvNeXt-Large</td>
 <td align="center"> 61.4 </td>
 <td align="center"> 43.5 </td>
 <td align="center"> 51.7 </td>
@@ -52,8 +52,7 @@ pretrained from COCO
 </tr>
 </tbody></table>
 
-#### Online
-(pretrained model: (COCO)[https://drive.google.com/drive/folders/1y_F8gJfZ2u9oDhqJy2y61FfpOBFGDWk7?usp=sharing])
+#### Online (pretrained model: [COCO](https://drive.google.com/drive/folders/1y_F8gJfZ2u9oDhqJy2y61FfpOBFGDWk7?usp=sharing))
 
 <table><tbody>
 <!-- START TABLE -->
@@ -87,8 +86,7 @@ pretrained from COCO
 
 pretrained from Cityscape
 
-#### Near-online
-(pretrained model: (Cityscape )[https://drive.google.com/drive/folders/1u-VBjkrPRP2NiFOVF15Lmd01ZDALVwsx?usp=sharing])
+#### Near-online (pretrained model: [Cityscape](https://drive.google.com/drive/folders/1u-VBjkrPRP2NiFOVF15Lmd01ZDALVwsx?usp=sharing))
 
 <table><tbody>
 <!-- START TABLE -->
@@ -115,8 +113,7 @@ pretrained from Cityscape
 </tr>
 </tbody></table>
 
-#### Online
-(pretrained model: (COCO)[https://drive.google.com/drive/folders/1y_F8gJfZ2u9oDhqJy2y61FfpOBFGDWk7?usp=sharing])
+#### Online (pretrained model: [Cityscape pseudo video](https://drive.google.com/drive/folders/1y_F8gJfZ2u9oDhqJy2y61FfpOBFGDWk7?usp=sharing))
 
 <table><tbody>
 <!-- START TABLE -->
