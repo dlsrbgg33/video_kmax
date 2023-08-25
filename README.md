@@ -20,7 +20,122 @@ Please refer to [Mask2Former's script](https://github.com/facebookresearch/Mask2
 
 ### VIPSeg VPS
 
+pretrained from COCO
+
+#### Near-online (pretrained model: (COCO pseudo video)[https://drive.google.com/drive/folders/1CX4V1wYlAPW0vqkMP9tSDlqvjjVy4vWS?usp=sharing])
+
+<table><tbody>
+<!-- START TABLE -->
+<!-- TABLE HEADER -->
+<th valign="bottom">Backbone</th>
+<th valign="bottom">SQ</th>
+<th valign="bottom">AQ</th>
+<th valign="bottom">STQ</th>
+<th valign="bottom">VPQ</th>
+<th valign="bottom">ckpt</th>
+<!-- TABLE BODY -->
+ <!-- <tr><td align="left"><a href="./configs/coco/panoptic_segmentation/kmax_r50.yaml">ResNet-50</td> -->
+<td align="center"> ResNet-50 </td>
+<td align="center"> 45.1 </td>
+<td align="center"> 35.3 </td>
+<td align="center"> 39.9 </td>
+<td align="center"> 38.2 </td>
+<td align="center"><a href="https://drive.google.com/drive/folders/1gCbGXrk8LxbX73ZXpFn3DpVbICD3BndA?usp=sharing">download</a></td>
+</tr>
+<td align="center"> ConvNeXt-Large </td>
+<td align="center"> 61.4 </td>
+<td align="center"> 43.5 </td>
+<td align="center"> 51.7 </td>
+<td align="center"> 51.9 </td>
+<td align="center"><a href="https://drive.google.com/drive/folders/1yxa7kouUGfoxhyG95tdYbe_s--58TaGF?usp=sharing">download</a></td>
+</tr>
+</tbody></table>
+
+#### Online (pretrained model: (COCO)[https://drive.google.com/drive/folders/1y_F8gJfZ2u9oDhqJy2y61FfpOBFGDWk7?usp=sharing])
+
+<table><tbody>
+<!-- START TABLE -->
+<!-- TABLE HEADER -->
+<th valign="bottom">Backbone</th>
+<th valign="bottom">SQ</th>
+<th valign="bottom">AQ</th>
+<th valign="bottom">STQ</th>
+<th valign="bottom">VPQ</th>
+<th valign="bottom">ckpt</th>
+<!-- TABLE BODY -->
+ <!-- <tr><td align="left"><a href="./configs/coco/panoptic_segmentation/kmax_r50.yaml">ResNet-50</td> -->
+<td align="center"> ResNet-50 </td>
+<td align="center"> 46.3 </td>
+<td align="center"> 32.4 </td>
+<td align="center"> 38.7 </td>
+<td align="center"> 36.8 </td>
+<td align="center"><a href="https://drive.google.com/drive/folders/1gCbGXrk8LxbX73ZXpFn3DpVbICD3BndA?usp=sharing">download</a></td>
+</tr>
+<td align="center"> ConvNeXt-Large </td>
+<td align="center"> 60.7 </td>
+<td align="center"> 40.2 </td>
+<td align="center"> 49.4 </td>
+<td align="center"> 49.4 </td>
+<td align="center"><a href="https://drive.google.com/drive/folders/1yxa7kouUGfoxhyG95tdYbe_s--58TaGF?usp=sharing">download</a></td>
+</tr>
+</tbody></table>
+
 ### KITTI-STEP VPS
+
+pretrained from Cityscape
+
+#### Near-online (pretrained model: (Cityscape )[https://drive.google.com/drive/folders/1u-VBjkrPRP2NiFOVF15Lmd01ZDALVwsx?usp=sharing])
+
+<table><tbody>
+<!-- START TABLE -->
+<!-- TABLE HEADER -->
+<th valign="bottom">Backbone</th>
+<th valign="bottom">SQ</th>
+<th valign="bottom">AQ</th>
+<th valign="bottom">STQ</th>
+<th valign="bottom">ckpt</th>
+<!-- TABLE BODY -->
+ <!-- <tr><td align="left"><a href="./configs/coco/panoptic_segmentation/kmax_r50.yaml">ResNet-50</td> -->
+<td align="center"> ResNet-50 </td>
+<td align="center"> 74.2 </td>
+<td align="center"> 74.2 </td>
+<td align="center"> 74.2 </td>
+<td align="center"><a href="">download</a></td>
+</tr>
+<td align="center"> ConvNeXt-Large </td>
+<td align="center"> 79.0 </td>
+<td align="center"> 78.8 </td>
+<td align="center"> 78.9 </td>
+<td align="center"><a href="">download</a></td>
+</tr>
+</tbody></table>
+
+#### Online (pretrained model: (COCO)[https://drive.google.com/drive/folders/1y_F8gJfZ2u9oDhqJy2y61FfpOBFGDWk7?usp=sharing])
+
+
+<table><tbody>
+<!-- START TABLE -->
+<!-- TABLE HEADER -->
+<th valign="bottom">Backbone</th>
+<th valign="bottom">SQ</th>
+<th valign="bottom">AQ</th>
+<th valign="bottom">STQ</th>
+<th valign="bottom">ckpt</th>
+<!-- TABLE BODY -->
+ <!-- <tr><td align="left"><a href="./configs/coco/panoptic_segmentation/kmax_r50.yaml">ResNet-50</td> -->
+<td align="center"> ResNet-50 </td>
+<td align="center"> 75.0 </td>
+<td align="center"> 72.0 </td>
+<td align="center"> 73.5 </td>
+<td align="center"><a href="">download</a></td>
+</tr>
+<td align="center"> ConvNeXt-Large </td>
+<td align="center"> 77.2 </td>
+<td align="center"> 75.7 </td>
+<td align="center"> 76.5 </td>
+<td align="center"><a href="">download</a></td>
+</tr>
+</tbody></table>
 
 ## Citing Video-kMaX
 
