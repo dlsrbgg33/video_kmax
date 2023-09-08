@@ -18,7 +18,7 @@ from tqdm import tqdm
 from collections import defaultdict
 import copy
 import pdb
-import kmax_deeplab.evaluation.video_evaluators.segmentation_and_tracking_quality as numpy_stq
+import video_kmax_deeplab.evaluation.video_evaluators.segmentation_and_tracking_quality as numpy_stq
 
 from collections import OrderedDict
 
@@ -40,7 +40,7 @@ def parse_args():
 
 
 def STQeval(predictions, pan_gt_json_file, pred_dir, gt_folder, output_dir):
-    n_classes = 124
+    n_classes = 124 # need to modify to be corresponding to each dataset 
     ignore_label = 255
     bit_shit = 16
     
