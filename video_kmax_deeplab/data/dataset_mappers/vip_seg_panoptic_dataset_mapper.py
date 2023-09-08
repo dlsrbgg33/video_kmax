@@ -97,27 +97,7 @@ def build_color_jitter_transform(cfg, is_train):
     return augmentation
 
 
-OPENAI_DATASET_MEAN = (0.48145466, 0.4578275, 0.40821073)
-OPENAI_DATASET_STD = (0.26862954, 0.26130258, 0.27577711)
-
-def transform_openai():
-    transforms = []
-    normalize = Normalize(mean=OPENAI_DATASET_MEAN, std=OPENAI_DATASET_STD)
-    transforms.extend([
-        # _convert_to_rgb,
-        ToTensor(),
-        normalize
-    ])
-
-    return Compose(transforms)
-
-def clean_name(name):
-    name = re.sub(r"\(.*\)", "", name)
-    name = re.sub(r"_", " ", name)
-    name = re.sub(r"  ", " ", name)
-    return name
-
-# This is specifically designed for the COCO dataset.
+# This is specifically designed for the VIPSeg dataset.
 class VIPSegPanopticDatasetMapper:
     """
     A callable which takes a dataset dict in Detectron2 Dataset format,
@@ -179,50 +159,16 @@ class VIPSegPanopticDatasetMapper:
         self.is_test = is_test
         self.image_size = image_size
 
-        # TODO(qihangyu): Better way to implement this copy paste augmentation.
-        # image_dirv = "./datasets/vip_seg/val_images"
-        # gt_dirv = "./datasets/vip_seg/panomasksRGB"
-        # json_filev = "./datasets/vip_seg/panoptic_gt_VIPSeg_val.json"
         image_dirt = "./datasets/vip_seg/train_images"
         gt_dirt = "./datasets/vip_seg/panomasksRGB"
         json_filet = "./datasets/vip_seg/panoptic_gt_VIPSeg_train.json"
-        # # image_dir = "./datasets/vip_seg/val_images_two"
-        # # gt_dir = "./datasets/vip_seg/panomasksRGB_two"
-        # # json_file = "./datasets/vip_seg/panoptic_gt_VIPSeg_val_only_two_for_test.json"
-        # # image_dir = "./datasets/vip_seg/test_images_720p"
-        # # gt_dir = "./datasets/vip_seg/panomasksRGB"
-        # # json_file = "./datasets/vip_seg/panoptic_gt_VIPSeg_test.json"
+
         from ..datasets import vip_seg
         meta_data = vip_seg._get_vip_seg_meta()
-        
-        # # load all videos
-        # dataset_dict_v = vip_seg.load_vipseg_panoptic_json(
-        #     json_filev, image_dirv, gt_dirv, meta_data, is_test
-        # )
+
         dataset_dict_t = vip_seg.load_vipseg_panoptic_json(
             json_filet, image_dirt, gt_dirt, meta_data, is_test
         )
-        # image_dirt = "./datasets/burst/frames/train"
-        # json_filet = "./datasets/burst/pseudo_anno/train.json"
-        # gt_dirt = "./datasets/burst/panopRGB_pseudo"
-
-        # image_dir = "./datasets/vip_seg/val_images_two"
-        # gt_dir = "./datasets/vip_seg/panomasksRGB_two"
-        # json_file = "./datasets/vip_seg/panoptic_gt_VIPSeg_val_only_two_for_test.json"
-        # image_dir = "./datasets/vip_seg/test_images_720p"
-        # gt_dir = "./datasets/vip_seg/panomasksRGB"
-        # json_file = "./datasets/vip_seg/panoptic_gt_VIPSeg_test.json"
-        # from ..datasets import vip_seg
-        # meta_data = vip_seg._get_vip_seg_meta()
-        
-        # # load all videos
-        # dataset_dict_v = vip_seg.load_vipseg_panoptic_json(
-        #     json_filev, image_dirv, gt_dirv, meta_data, is_test
-        # )
-        # dataset_dict_t = vip_seg.load_vipseg_panoptic_json(
-        #     json_filet, image_dirt, gt_dirt, meta_data, is_test
-        # )
-        
         
         # self.dataset_dict_all = dataset_dict_v + dataset_dict_t 
         self.dataset_dict_all = dataset_dict_t 
@@ -230,94 +176,10 @@ class VIPSegPanopticDatasetMapper:
         for idx, dataset_dict in enumerate(self.dataset_dict_all):
             self.videoname2idx[dataset_dict[0]["video_id"]] = idx
 
-        # TODO(inkyu): implement sampling hyperparameters
         self.sampling_frame_num     = sampling_frame_num
         self.sampling_frame_range   = sampling_frame_range
         self.sampling_interval      = sampling_interval
         self.sampling_frame_shuffle = sampling_frame_shuffle
-
-
-        self.openai_tranform = transform_openai()
-        # self.tokenizer = AutoTokenizer.from_pretrained('/data/inkyu/prj-deeplab/video_kmax_detectron2/kmax_deeplab/bert-base-uncased') # align with GLIP
-
-        # objects_query, positive_map_label_to_token = self.create_queries_and_maps_vps(
-        #     VIPSEG_CATEGORIES, self.tokenizer)
-
-    def create_queries_and_maps_vps(self, categories, tokenizer, separation_tokens=". "):
-
-        label_list = []
-        for x in categories:
-            label_list.append(x["name"])
-        labels = list(range(1, len(label_list) + 1)) # [1, 2, ..., 80]
-
-        # Clean label list
-        label_list = [clean_name(i) for i in label_list]
-        # Form the query and get the mapping
-        tokens_positive = []
-        start_i = 0
-        end_i = 0
-        objects_query = ""
-
-        # sep between tokens, follow training
-        separation_tokens = ". "
-        for _index, label in enumerate(label_list):
-            
-            start_i = len(objects_query)
-
-            objects_query += label
-            
-            end_i = len(objects_query)
-            tokens_positive.append([(start_i, end_i)])  # Every label has a [(start, end)]
-
-            if _index != len(label_list) - 1:
-                objects_query += separation_tokens
-
-        # print(objects_query) # 'person. bicycle. car. motorcycle. airplane. bus. train. truck. boat. traffic light. fire hydrant. stop sign. parking meter. bench. bird. cat. dog. horse. sheep. cow. elephant. bear. zebra. giraffe. backpack. umbrella. handbag. tie. suitcase. frisbee. skis. snowboard. sports ball. kite. baseball bat. baseball glove. skateboard. surfboard. tennis racket. bottle. wine glass. cup. fork. knife. spoon. bowl. banana. apple. sandwich. orange. broccoli. carrot. hot dog. pizza. donut. cake. chair. couch. potted plant. bed. dining table. toilet. tv. laptop. mouse. remote. keyboard. cell phone. microwave. oven. toaster. sink. refrigerator. book. clock. vase. scissors. teddy bear. hair drier. toothbrush'
-        tokenized = tokenizer(objects_query, return_tensors="pt")
-        self.text_encoder = nn.Sequential(OrderedDict([("body", BertEncoder())]))
-        language_dict_features = self.text_encoder(tokenized)
-        import pdb
-        pdb.set_trace()
-        # Create the mapping between tokenized sentence and the original label
-        positive_map_token_to_label, positive_map_label_to_token = self.create_positive_dict(tokenized, tokens_positive, labels=labels)  # from token position to original label
-        return objects_query, positive_map_label_to_token
-
-    def create_positive_dict(self, tokenized, tokens_positive, labels):
-        """construct a dictionary such that positive_map[i] = j, iff token i is mapped to j label"""
-        positive_map = defaultdict(int)
-
-        # Additionally, have positive_map_label_to_tokens
-        positive_map_label_to_token = {}
-
-        for j, tok_list in enumerate(tokens_positive):
-            for (beg, end) in tok_list:
-                beg_pos = tokenized.char_to_token(beg)
-                end_pos = tokenized.char_to_token(end - 1)
-                if beg_pos is None:
-                    try:
-                        beg_pos = tokenized.char_to_token(beg + 1)
-                        if beg_pos is None:
-                            beg_pos = tokenized.char_to_token(beg + 2)
-                    except:
-                        beg_pos = None
-                if end_pos is None:
-                    try:
-                        end_pos = tokenized.char_to_token(end - 2)
-                        if end_pos is None:
-                            end_pos = tokenized.char_to_token(end - 3)
-                    except:
-                        end_pos = None
-                if beg_pos is None or end_pos is None:
-                    continue
-
-                assert beg_pos is not None and end_pos is not None
-                positive_map_label_to_token[labels[j]] = [] 
-                for i in range(beg_pos, end_pos + 1):
-                    positive_map[i] = labels[j]  # because the labels starts from 1
-                    positive_map_label_to_token[labels[j]].append(i)
-                # positive_map[j, beg_pos : end_pos + 1].fill_(1)
-        return positive_map, positive_map_label_to_token  # / (positive_map.sum(-1)[:, None] + 1e-6)
-
 
 
     @classmethod

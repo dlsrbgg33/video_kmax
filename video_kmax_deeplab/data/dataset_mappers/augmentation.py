@@ -50,67 +50,10 @@ class ResizeShortestEdge(T.Augmentation):
 
         self.min_scale = cfg.INPUT.MIN_SCALE
         self.max_scale = cfg.INPUT.MAX_SCALE
-
-    # def get_transform(self, image):
-    #     if self._cnt % self.clip_frame_cnt == 0:
-    #         if self.is_range:
-    #             self.size = np.random.randint(self.short_edge_length[0], self.short_edge_length[1] + 1)
-    #         else:
-    #             self.size = np.random.choice(self.short_edge_length)
-    #         if self.size == 0:
-    #             return NoOpTransform()
-
-    #         self._cnt = 0   # avoiding overflow
-    #     self._cnt += 1
-
-    #     h, w = image.shape[:2]
-
-    #     scale = self.size * 1.0 / min(h, w)
-    #     if h < w:
-    #         newh, neww = self.size, scale * w
-    #     else:
-    #         newh, neww = scale * h, self.size
-    #     if max(newh, neww) > self.max_size:
-    #         scale = self.max_size * 1.0 / max(newh, neww)
-    #         newh = newh * scale
-    #         neww = neww * scale
-    #     neww = int(neww + 0.5)
-    #     newh = int(newh + 0.5)
-
-    #     neww_crop = neww // 64 * 64 + 1
-    #     newh_crop = newh // 64 * 64 + 1
-
-    #     return T.ResizeTransform(h, w, newh_crop, neww_crop, self.interp)
+        
 
 
     def get_transform(self, image):
-        # if self._cnt % self.clip_frame_cnt == 0:
-        #     if self.is_range:
-        #         self.size = np.random.randint(self.short_edge_length[0], self.short_edge_length[1] + 1)
-        #     else:
-        #         self.size = np.random.choice(self.short_edge_length)
-        #     if self.size == 0:
-        #         return NoOpTransform()
-
-        #     self._cnt = 0   # avoiding overflow
-        # self._cnt += 1
-
-        # h, w = image.shape[:2]
-
-        # scale = self.size * 1.0 / min(h, w)
-        # if h < w:
-        #     newh, neww = self.size, scale * w
-        # else:
-        #     newh, neww = scale * h, self.size
-        # if max(newh, neww) > self.max_size:
-        #     scale = self.max_size * 1.0 / max(newh, neww)
-        #     newh = newh * scale
-        #     neww = neww * scale
-        # neww = int(neww + 0.5)
-        # newh = int(newh + 0.5)
-
-        # neww_crop = neww // 64 * 64 + 1
-        # newh_crop = newh // 64 * 64 + 1
 
         aug = T.ResizeScale(
                 min_scale=self.min_scale, max_scale=self.max_scale, target_height=self.image_size[0], target_width=self.image_size[1]

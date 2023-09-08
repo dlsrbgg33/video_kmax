@@ -4,17 +4,18 @@
 # Registry for multiple dataset is implemented
 # - COCO (panoptic)
 # - VIPSeg (panoptic)
+# - KITTI-STEP (panoptic)
 
 
 import os
 
 from detectron2.data import MetadataCatalog
 
+
 from .coco import (
     register_coco_panoptic_annos_sem_seg,
     _get_coco_meta
 )
-
 # ==== Predefined splits for COCO Panoptic datasets ===========
 _PREDEFINED_SPLITS_COCO_PANOPTIC = {
     "coco_2017_train_panoptic": (
@@ -58,7 +59,6 @@ from .vip_seg import (
     register_vipseg_panoptic_annos_sem_seg,
     _get_vip_seg_meta
 )
-
 # ==== Predefined splits for VIPSeg VIDEO Panoptic datasets ===========
 _PREDEFINED_SPLITS_VIPSEG_VIDEO_PANOPTIC = {
     "vipseg_train_video_panoptic": (
@@ -69,25 +69,10 @@ _PREDEFINED_SPLITS_VIPSEG_VIDEO_PANOPTIC = {
         "vip_seg/panoptic_gt_VIPSeg_train.json",
         "vip_seg/panomasksRGB",
     ),
-    # "vipseg_val_video_panoptic": (
-    #     "vip_seg/val_images",
-    #     "vip_seg/panoptic_gt_VIPSeg_val.json",
-    #     "vip_seg/panomasksRGB",
-    # ),
     "vipseg_val_video_panoptic": (
-        "vip_seg/car-turn",
-        "vip_seg/car_turn.json",
+        "vip_seg/val_images",
+        "vip_seg/panoptic_gt_VIPSeg_val.json",
         "vip_seg/panomasksRGB",
-    ),
-    "vipseg_test_video_panoptic": (
-        "vip_seg/test_images_720p",
-        "vip_seg/panoptic_gt_VIPSeg_test_rev.json",
-        "vip_seg/panomasksRGB",
-    ),
-    "burst_pseudo_train_video_panoptic": (
-        "burst/frames/train",
-        "burst/pseudo_anno/train.json",
-        "burst/panopRGB_pseudo"
     ),
 }
 def register_all_vipseg_video_panoptic_annos_sem_seg(root):
@@ -111,7 +96,6 @@ from .kitti_step import (
     register_kitti_panoptic_annos_sem_seg,
     _get_kitti_seg_meta
 )
-
 # ==== Predefined splits for VIPSeg VIDEO Panoptic datasets ===========
 _PREDEFINED_SPLITS_KITTI_VIDEO_PANOPTIC = {
     "kitti_train_video_panoptic": (
@@ -153,7 +137,6 @@ if __name__.endswith(".builtin"):
     # COCO
     register_all_coco_panoptic_annos_sem_seg(_root)
     register_all_vipseg_video_panoptic_annos_sem_seg(_root)
-    # register_all_burst_video_annos_sem_seg(_root)
     register_all_kitti_video_panoptic_annos_sem_seg(_root)
     
     
