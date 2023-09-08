@@ -28,7 +28,6 @@ from detectron2.engine import (
     launch,
 )
 from detectron2.evaluation import (
-    DatasetEvaluator,
     COCOEvaluator,
     DatasetEvaluators,
     SemSegEvaluator,
@@ -38,26 +37,19 @@ from collections import OrderedDict
 from detectron2.projects.deeplab import add_deeplab_config, build_lr_scheduler
 from detectron2.solver.build import maybe_add_gradient_clipping
 from detectron2.utils.logger import setup_logger
+from detectron2.data import MetadataCatalog
 
-from kmax_deeplab.evaluation.evaluator import inference_on_dataset_ensemble
-from kmax_deeplab.evaluation.ytvis_eval import YTVISEvaluator
+
 # MaskFormer
-from kmax_deeplab import (
+from video_kmax_deeplab import (
     COCOPanoptickMaXDeepLabDatasetMapper,
     COCOVideoPanopticDatasetMapper,
     VIPSegPanopticDatasetMapper,
-    BURSTVideoDatasetMapper,
     add_kmax_deeplab_config,
-    InstancekMaXDeepLabDatasetMapper,
-    YTVISDatasetMapper,
     build_detection_train_loader,
     build_detection_test_loader,
-    get_detection_dataset_dicts,
 )
 
-
-import logging
-from detectron2.data import MetadataCatalog
 
 import train_net_utils
 
@@ -89,8 +81,6 @@ class Trainer(DefaultTrainer):
         if evaluator_type in [
             "video_panoptic_seg",
         ]:
-            if dataset_name =="burst_val_video":
-                dataset_name = "vipseg_val_video_panoptic"
             if cfg.MODEL.KMAX_DEEPLAB.TEST.PANOPTIC_ON:
                 evaluator_list.append(train_net_utils.VideoPanopticEvaluatorwithVis(
                     dataset_name, output_folder, save_vis_num=cfg.MODEL.KMAX_DEEPLAB.SAVE_VIS_NUM, save_raw_panoptic=True))
@@ -100,11 +90,10 @@ class Trainer(DefaultTrainer):
             evaluator_list.append(COCOEvaluator(dataset_name, output_dir=output_folder))
         if evaluator_type == "coco_panoptic_seg" and cfg.MODEL.KMAX_DEEPLAB.TEST.SEMANTIC_ON:
             evaluator_list.append(SemSegEvaluator(dataset_name, distributed=True, output_dir=output_folder))
-        if evaluator_type == "ytvis" and cfg.MODEL.KMAX_DEEPLAB.TEST.INSTANCE_ON:
-            evaluator_list.append(YTVISEvaluator(dataset_name, output_dir=output_folder))
         elif len(evaluator_list) == 1:
             return evaluator_list[0]
         return DatasetEvaluators(evaluator_list)
+
 
     @classmethod
     def build_train_loader(cls, cfg):
@@ -117,25 +106,11 @@ class Trainer(DefaultTrainer):
             return build_detection_train_loader(cfg, mapper=mapper)    
         elif cfg.INPUT.DATASET_MAPPER_NAME == "coco_video_panoptic":
             mapper = COCOVideoPanopticDatasetMapper(cfg, True)
-            return build_detection_train_loader(cfg, mapper=mapper)    
-        elif cfg.INPUT.DATASET_MAPPER_NAME == "burst_video":
-            mapper = BURSTVideoDatasetMapper(cfg, True)
             return build_detection_train_loader(cfg, mapper=mapper)
-        elif cfg.INPUT.DATASET_MAPPER_NAME == "ytvis_2019":
-            mapper = InstancekMaXDeepLabDatasetMapper(cfg, True)
-            return build_detection_train_loader(cfg, mapper=mapper)      
-        elif cfg.INPUT.DATASET_MAPPER_NAME == "ytvis_2019_mask":
-            mapper = YTVISDatasetMapper(cfg, True)
-            dataset_name = cfg.DATASETS.TRAIN[0]
-            dataset_dict = get_detection_dataset_dicts(
-                dataset_name,
-                filter_empty=cfg.DATALOADER.FILTER_EMPTY_ANNOTATIONS,
-                proposal_files=cfg.DATASETS.PROPOSAL_FILES_TRAIN if cfg.MODEL.LOAD_PROPOSALS else None,
-            )
-            return build_detection_train_loader(cfg, mapper=mapper, dataset=dataset_dict)   
         else:
             mapper = None
             return build_detection_train_loader(cfg, mapper=mapper)
+      
       
     @classmethod
     def build_test_loader(cls, cfg, dataset_name):
@@ -145,15 +120,10 @@ class Trainer(DefaultTrainer):
             mapper = VIPSegPanopticDatasetMapper(cfg, is_train=False, is_test=True)
         elif dataset_name.startswith("coco") and cfg.INPUT.SAMPLING_FRAME_NUM >= 1:
             mapper = COCOVideoPanopticDatasetMapper(cfg, is_train=False)
-        elif dataset_name.startswith("burst_val"):
-            mapper = BURSTVideoDatasetMapper(cfg, is_train=False, is_test=True)
-        elif dataset_name.startswith("ytvis_2019"):
-            mapper = InstancekMaXDeepLabDatasetMapper(cfg, is_train=False)
-        elif dataset_name.startswith("ytvis_2019_mask"):
-            mapper = YTVISDatasetMapper(cfg, is_train=False)
         else:
             mapper = None
         return build_detection_test_loader(cfg, dataset_name, mapper=mapper)  
+
 
     @classmethod
     def build_lr_scheduler(cls, cfg, optimizer):
@@ -175,6 +145,7 @@ class Trainer(DefaultTrainer):
         else:
             return build_lr_scheduler(cfg, optimizer)
 
+
     @classmethod
     def build_optimizer(cls, cfg, model):
         weight_decay_norm = cfg.SOLVER.WEIGHT_DECAY_NORM
@@ -184,7 +155,7 @@ class Trainer(DefaultTrainer):
         defaults["lr"] = cfg.SOLVER.BASE_LR
         defaults["weight_decay"] = cfg.SOLVER.WEIGHT_DECAY
 
-        from kmax_deeplab.modeling.backbone.convnext import LayerNorm
+        from video_kmax_deeplab.modeling.backbone.convnext import LayerNorm
 
         norm_module_types = (
             torch.nn.BatchNorm1d,
@@ -280,62 +251,6 @@ class Trainer(DefaultTrainer):
             optimizer = maybe_add_gradient_clipping(cfg, optimizer)
         return optimizer
 
-    # @classmethod
-    # def test(cls, cfg, model, evaluators=None):
-    #     """
-    #     Evaluate the given model. The given model is expected to already contain
-    #     weights to evaluate.
-
-    #     Args:
-    #         cfg (CfgNode):
-    #         model (nn.Module):
-    #         evaluators (list[DatasetEvaluator] or None): if None, will call
-    #             :meth:`build_evaluator`. Otherwise, must have the same length as
-    #             ``cfg.DATASETS.TEST``.
-
-    #     Returns:
-    #         dict: a dict of result metrics
-    #     """
-    #     logger = logging.getLogger(__name__)
-    #     if isinstance(evaluators, DatasetEvaluator):
-    #         evaluators = [evaluators]
-    #     if evaluators is not None:
-    #         assert len(cfg.DATASETS.TEST) == len(evaluators), "{} != {}".format(
-    #             len(cfg.DATASETS.TEST), len(evaluators)
-    #         )
-        
-    #     results = OrderedDict()
-    #     for idx, dataset_name in enumerate(cfg.DATASETS.TEST):
-    #         data_loader = cls.build_test_loader(cfg, dataset_name)
-    #         # When evaluators are passed in as arguments,
-    #         # implicitly assume that evaluators can be created before data_loader.
-    #         if evaluators is not None:
-    #             evaluator = evaluators[idx]
-    #         else:
-    #             try:
-    #                 evaluator = cls.build_evaluator(cfg, dataset_name)
-    #             except NotImplementedError:
-    #                 logger.warn(
-    #                     "No evaluator found. Use `DefaultTrainer.test(evaluators=)`, "
-    #                     "or implement its `build_evaluator` method."
-    #                 )
-    #                 results[dataset_name] = {}
-    #                 continue
-    #         # results_i = inference_on_dataset_ensemble(model, model_ref, data_loader, evaluator)
-    #         results_i = inference_on_dataset(model, model_ref, data_loader, evaluator)
-    #         results[dataset_name] = results_i
-    #         if comm.is_main_process():
-    #             assert isinstance(
-    #                 results_i, dict
-    #             ), "Evaluator must return a dict on the main process. Got {} instead.".format(
-    #                 results_i
-    #             )
-    #             logger.info("Evaluation results for {} in csv format:".format(dataset_name))
-    #             print_csv_format(results_i)
-
-    #     if len(results) == 1:
-    #         results = list(results.values())[0]
-    #     return results
 
 def setup(args):
     """
@@ -352,21 +267,9 @@ def setup(args):
     setup_logger(output=cfg.OUTPUT_DIR, distributed_rank=comm.get_rank(), name="kmax_deeplab")
     return cfg
 
-def setup_ref(config_file):
-    """
-    Create configs and perform basic setups.
-    """
-    cfg = get_cfg()
-    # for poly lr schedule
-    add_deeplab_config(cfg)
-    add_kmax_deeplab_config(cfg)
-    cfg.merge_from_file(config_file)
-    cfg.freeze()
-    return cfg
 
 def main(args):
     cfg = setup(args)
-    cfg_ref = setup_ref("configs/vip_seg/video_kmax_convnext_xxlarge_open_clip_w_burstpseudo_w_vip.yaml")
     
     if cfg.MODEL.KMAX_DEEPLAB.USE_CUDNN:
         torch.backends.cudnn.enabled = True
@@ -377,13 +280,6 @@ def main(args):
         DetectionCheckpointer(model, save_dir=cfg.OUTPUT_DIR).resume_or_load(
             cfg.MODEL.WEIGHTS, resume=args.resume
         )
-        # model_ref = Trainer.build_model(cfg_ref)
-        # ref_model_weights = "outputs/burst_w_vip_vipseg_video_vkmax_convnext_xxlarge_from_openclip_25k_833_freeze_last10/model_final.pth"
-        # DetectionCheckpointer(model_ref, save_dir=cfg.OUTPUT_DIR).resume_or_load(
-        #     ref_model_weights, resume=False
-        # )
-        
-        # res = Trainer.test(cfg, model, model_ref)
         res = Trainer.test(cfg, model)
         if comm.is_main_process():
             verify_results(cfg, res)

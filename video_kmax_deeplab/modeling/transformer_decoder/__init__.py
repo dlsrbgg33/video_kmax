@@ -1,1 +1,1 @@
-from .kmax_transformer_decoder import kMaXTransformerDecoder
+from .kmax_transformer_decoder import VideokMaXTransformerDecoder

@@ -19,9 +19,7 @@ from ..pixel_decoder.kmax_pixel_decoder import get_norm, ConvBN
 
 from typing import Optional
 import math
-from torch.cuda.amp import autocast
 
-from .position_encoding import PositionEmbeddingSine3D
 
 TRANSFORMER_DECODER_REGISTRY = Registry("TRANSFORMER_MODULE")
 TRANSFORMER_DECODER_REGISTRY.__doc__ = """
@@ -450,7 +448,7 @@ class SemanticPredictor(nn.Module):
 
 
 @TRANSFORMER_DECODER_REGISTRY.register()
-class kMaXTransformerDecoder(nn.Module):
+class VideokMaXTransformerDecoder(nn.Module):
 
     @configurable
     def __init__(
@@ -569,9 +567,7 @@ class kMaXTransformerDecoder(nn.Module):
 
 
     def forward(self, x, panoptic_features, semantic_features):
-        # if num_frames_off:
-        #     self.num_frames = num_frames_off
-
+        
         B = x[0].shape[0] // self.num_frames
         
         cluster_centers = self._cluster_centers.weight.unsqueeze(0).repeat(B, 1, 1) # B x C x L
@@ -617,7 +613,6 @@ class kMaXTransformerDecoder(nn.Module):
             'pred_logits': predictions_class[-1],
             'pred_masks': predictions_mask[-1],
             'pixel_feature': predictions_pixel_feature[-1],
-            # 'cluster_feature': prediction_result['cluster_feat'],
             'cluster_feature': mask_embeddings,
             'aux_outputs': self._set_aux_loss(
                 predictions_class, predictions_mask, predictions_pixel_feature
