@@ -18,29 +18,25 @@ from detectron2.data import MetadataCatalog
 from detectron2.evaluation import COCOPanopticEvaluator
 
 from detectron2.utils.visualizer import ColorMode, Visualizer
-from kmax_deeplab.utils.video_panoptic_visualizer import ColorMode, Visualizer
-# from detectron2.data import MetadataCatalog
+from video_kmax_deeplab.utils.video_panoptic_visualizer import ColorMode, Visualizer
+
 import io
 import math
 from PIL import Image
 
 from detectron2.solver.lr_scheduler import _get_warmup_factor_at_iter
 
-from kmax_deeplab.evaluation.wandb import WandbVideoVisualizer
-
 import logging
 from tqdm import tqdm
 import copy
 
 # load video evaluators
-import kmax_deeplab.evaluation.video_evaluators.eval_vpq as vpq
-import kmax_deeplab.evaluation.video_evaluators.eval_stq as stq 
+import video_kmax_deeplab.evaluation.video_evaluators.eval_vpq as vpq
+import video_kmax_deeplab.evaluation.video_evaluators.eval_stq as stq 
 
 logger = logging.getLogger(__name__)
 
 
-OPENAI_DATASET_MEAN = (0.48145466, 0.4578275, 0.40821073)
-OPENAI_DATASET_STD = (0.26862954, 0.26130258, 0.27577711)
 class UnNormalize(object):
     def __init__(self, mean, std):
         self.mean = mean
@@ -57,6 +53,7 @@ class UnNormalize(object):
             t.mul_(s).add_(m)
             # The normalize code -> t.sub_(m).div_(s)
         return tensor
+
 
 class TF2WarmupPolyLR(torch.optim.lr_scheduler._LRScheduler):
     """
@@ -117,16 +114,12 @@ class VideoPanopticEvaluatorwithVis(COCOPanopticEvaluator):
         - visualization: raw panoptic segmentation for server, panoptic segmentation with RGB colored
     """
 
-    def __init__(self, dataset_name: str, output_dir: Optional[str] = None, save_vis_num=0, save_raw_panoptic=False, vis_w_wanb=False, wandb_name=None):
+    def __init__(self, dataset_name: str, output_dir: Optional[str] = None, save_vis_num=0, save_raw_panoptic=False):
         super().__init__(dataset_name=dataset_name, output_dir=output_dir)
         self.metadata = MetadataCatalog.get("vipseg_val_video_panoptic")
         self.output_dir = output_dir
         self.save_vis_num = save_vis_num
         self.save_raw_panoptic = save_raw_panoptic
-        
-        self.vis_w_wanb = vis_w_wanb
-        if self.vis_w_wanb:
-            self.wanb_videovis = WandbVideoVisualizer(dataset_name, wandb_name)
         
         # currently, hard-coded to choose metrics
         self.metrics = ["STQ", "VPQ"]
@@ -170,9 +163,6 @@ class VideoPanopticEvaluatorwithVis(COCOPanopticEvaluator):
         each_video_dict = {}
         each_video_dict["annotations"] = []
 
-        vis_wanb = []
-        # self.wanb_videovis.reset()
-
         input = inputs[0]
         for idx, output in enumerate(outputs):            
             panoptic_img, segments_info = output["panoptic_seg"]
@@ -192,7 +182,6 @@ class VideoPanopticEvaluatorwithVis(COCOPanopticEvaluator):
                 # category_id * label_divisor + instance_id. We reserve -1 for
                 # VOID label, and add 1 to panoptic_img since the official
                 # evaluation script uses 0 for VOID label.
-                # import pdb; pdb.set_trace()
                 label_divisor = self._metadata.label_divisor
                 segments_info = []
                 for panoptic_label in np.unique(panoptic_img):
@@ -230,10 +219,6 @@ class VideoPanopticEvaluatorwithVis(COCOPanopticEvaluator):
             out_filename = os.path.join(self.output_dir, 'vis', video_name, file_name_png)
             vis_output.save(out_filename)
             vis_output_pil = Image.frombytes('RGB', vis_output.canvas.get_width_height(), vis_output.canvas.tostring_rgb())
-            vis_wanb.append(vis_output_pil)
-            # cur_save_num += 1
-
-
             
             with io.BytesIO() as out:
                 Image.fromarray(id2rgb(panoptic_img)).save(out, format="PNG")
@@ -250,8 +235,6 @@ class VideoPanopticEvaluatorwithVis(COCOPanopticEvaluator):
         each_video_dict["panop_path"] = os.path.join(self.output_dir, 'vis')
         self._predictions.append(each_video_dict)
 
-        if self.vis_w_wanb:
-            self.wanb_videovis.process(vis_wanb, video_name)
 
     def merge_results(self, results):
         # have one OrderedDict named as "video_panoptic_seg"
@@ -264,12 +247,7 @@ class VideoPanopticEvaluatorwithVis(COCOPanopticEvaluator):
         return merged_results
 
         
-
     def evaluate(self):
-        
-        if self.vis_w_wanb:
-            self.wanb_videovis.evaluate()
-        
         comm.synchronize()
         self._predictions = comm.gather(self._predictions)
         self._predictions = list(itertools.chain(*self._predictions))
@@ -328,7 +306,7 @@ class COCOPanopticEvaluatorwithVis(COCOPanopticEvaluator):
         self.metadata = MetadataCatalog.get("coco_2017_val_panoptic_with_sem_seg")
         self.output_dir = output_dir
         self.save_vis_num = save_vis_num
-        self.unorm = UnNormalize(OPENAI_DATASET_MEAN, OPENAI_DATASET_STD)
+
 
     def process(self, inputs, outputs):
         from panopticapi.utils import id2rgb
@@ -340,13 +318,10 @@ class COCOPanopticEvaluatorwithVis(COCOPanopticEvaluator):
             panoptic_img = panoptic_seg.numpy()
 
             file_name = os.path.basename(input["file_names"][0])
-            # file_name = os.path.basename(input["file_name"])
             file_name_png = os.path.splitext(file_name)[0] + ".png"
             if cur_save_num < self.save_vis_num:
-                # file_name_png = "test_%s.png" %(cur_save_num)
                 image = output["original_image"]
                 image = image.permute(1, 2 ,0).cpu().numpy()#[:, :, ::-1]
-                # image = self.unorm(image).permute((1, 2, 0)).cpu().numpy() * 255 # (H, W, 3)
                 visualizer = Visualizer(image, self.metadata, instance_mode=ColorMode.IMAGE)
                 vis_output = visualizer.draw_panoptic_seg_predictions(
                     panoptic_seg, segments_info
@@ -424,7 +399,7 @@ class COCOPanopticEvaluatorwithVis(COCOPanopticEvaluator):
             with PathManager.open(predictions_json, "w") as f:
                 f.write(json.dumps(json_data))
 
-            from kmax_deeplab.evaluation.panoptic_evaluation import pq_compute
+            from video_kmax_deeplab.evaluation.panoptic_evaluation import pq_compute
 
             with contextlib.redirect_stdout(io.StringIO()):
                 pq_res = pq_compute(
