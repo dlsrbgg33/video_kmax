@@ -15,6 +15,17 @@ please install other libiaries through *pip3 install -r requirements.txt*
 Please refer to [Mask2Former's script](https://github.com/facebookresearch/Mask2Former/blob/main/datasets/README.md) for data preparation.
 
 
+## Dataset preparation
+
+### VIPSeg VPS
+
+Please refer to [VIPSeg](https://github.com/VIPSeg-Dataset/VIPSeg-Dataset)
+
+### KITTI-STEP
+
+Please refer to [KITTI-STEP](https://github.com/google-research/deeplab2)
+We also provide the dataset through [Google Drive](https://github.com/google-research/deeplab2)
+
 ## Model Zoo
 
 
