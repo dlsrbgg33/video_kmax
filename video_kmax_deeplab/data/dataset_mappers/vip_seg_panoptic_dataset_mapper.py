@@ -15,14 +15,12 @@ from detectron2.structures import BitMasks, Boxes, Instances
 
 from fvcore.transforms.transform import PadTransform
 
-from transformers import AutoTokenizer
 import os
 import json
 
 from collections import defaultdict
 import re
 
-from kmax_deeplab.bert_model import BertEncoder
 
 import torch.nn as nn
 from collections import OrderedDict

@@ -21,5 +21,3 @@ from .data import (
 from .kmax_model import kMaXDeepLab
 from .video_kmax_model import VideokMaX
 
-# evaluation
-from .evaluation.instance_evaluation import InstanceSegEvaluator

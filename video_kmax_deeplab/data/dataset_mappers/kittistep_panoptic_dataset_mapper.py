@@ -15,7 +15,6 @@ from detectron2.structures import BitMasks, Boxes, Instances
 
 from fvcore.transforms.transform import PadTransform
 
-from transformers import AutoTokenizer
 import os
 import json
 

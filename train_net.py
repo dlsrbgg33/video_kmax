@@ -104,10 +104,10 @@ class Trainer(DefaultTrainer):
             return build_detection_train_loader(cfg, mapper=mapper)
         elif cfg.INPUT.DATASET_MAPPER_NAME == "vipseg_video_panoptic":
             mapper = VIPSegPanopticDatasetMapper(cfg, True)
-            return build_detection_train_loader(cfg, mapper=mapper) 
+            return build_detection_train_loader(cfg, mapper=mapper)
         elif cfg.INPUT.DATASET_MAPPER_NAME == "kitti_video_panoptic":
             mapper = KITTIPanopticDatasetMapper(cfg, True)
-            return build_detection_train_loader(cfg, mapper=mapper)     
+            return build_detection_train_loader(cfg, mapper=mapper)    
         elif cfg.INPUT.DATASET_MAPPER_NAME == "coco_video_panoptic":
             mapper = COCOVideoPanopticDatasetMapper(cfg, True)
             return build_detection_train_loader(cfg, mapper=mapper)
@@ -122,6 +122,8 @@ class Trainer(DefaultTrainer):
             mapper = VIPSegPanopticDatasetMapper(cfg, is_train=False)
         elif dataset_name.startswith("vipseg_test"):
             mapper = VIPSegPanopticDatasetMapper(cfg, is_train=False, is_test=True)
+        elif dataset_name.startswith("kitti_val"):
+            mapper = KITTIPanopticDatasetMapper(cfg, is_train=False, is_test=False)
         elif dataset_name.startswith("coco") and cfg.INPUT.SAMPLING_FRAME_NUM >= 1:
             mapper = COCOVideoPanopticDatasetMapper(cfg, is_train=False)
         else:

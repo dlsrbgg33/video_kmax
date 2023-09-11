@@ -82,6 +82,7 @@ def add_kmax_deeplab_config(cfg):
     cfg.MODEL.KMAX_DEEPLAB.TEST.STUFF_AREA_LIMIT = 0
     cfg.MODEL.KMAX_DEEPLAB.TEST.OVERLAP_THRESHOLD = 0.8
     cfg.MODEL.KMAX_DEEPLAB.TEST.SEM_SEG_POSTPROCESSING_BEFORE_INFERENCE = False
+    cfg.MODEL.KMAX_DEEPLAB.POST_PROCESSING_SEG = 'pixel_wise'
 
     # Sometimes `backbone.size_divisibility` is set to 0 for some backbone (e.g. ResNet)
     # you can use this config to override
@@ -128,7 +129,9 @@ def add_kmax_deeplab_config(cfg):
     # cfg.MODEL.VIDEO_KMAX.TEST.MEMORY_NAME = None # ['None', 'IDOL', 'Hi-LAMB']
     cfg.MODEL.VIDEO_KMAX.TEST.AGGREGATE_METHOD = 'IDOL' # ['IDOL', 'Hi-LAMB']
     cfg.MODEL.VIDEO_KMAX.TEST.SEMANTIC_CHECK = True
-    
+    cfg.MODEL.VIDEO_KMAX.TEST.LAMB_TEMPERATURE = 1.0
+    cfg.MODEL.VIDEO_KMAX.TEST.APPLY_INTRA_CLIP_ASSO = False
+
     cfg.MODEL.VIDEO_KMAX.SAM_FUSE = False
 
     cfg.WANDB = CN()
