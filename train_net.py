@@ -45,6 +45,7 @@ from video_kmax_deeplab import (
     COCOPanoptickMaXDeepLabDatasetMapper,
     COCOVideoPanopticDatasetMapper,
     VIPSegPanopticDatasetMapper,
+    KITTIPanopticDatasetMapper,
     add_kmax_deeplab_config,
     build_detection_train_loader,
     build_detection_test_loader,
@@ -103,7 +104,10 @@ class Trainer(DefaultTrainer):
             return build_detection_train_loader(cfg, mapper=mapper)
         elif cfg.INPUT.DATASET_MAPPER_NAME == "vipseg_video_panoptic":
             mapper = VIPSegPanopticDatasetMapper(cfg, True)
-            return build_detection_train_loader(cfg, mapper=mapper)    
+            return build_detection_train_loader(cfg, mapper=mapper) 
+        elif cfg.INPUT.DATASET_MAPPER_NAME == "kitti_video_panoptic":
+            mapper = KITTIPanopticDatasetMapper(cfg, True)
+            return build_detection_train_loader(cfg, mapper=mapper)     
         elif cfg.INPUT.DATASET_MAPPER_NAME == "coco_video_panoptic":
             mapper = COCOVideoPanopticDatasetMapper(cfg, True)
             return build_detection_train_loader(cfg, mapper=mapper)
