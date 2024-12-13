@@ -21,14 +21,6 @@ Please refer to [Mask2Former's script](https://github.com/facebookresearch/Mask2
 
 Please refer to [VIPSeg](https://github.com/VIPSeg-Dataset/VIPSeg-Dataset)
 
-### KITTI-STEP
-
-Please refer to [KITTI-STEP](https://github.com/google-research/deeplab2)
-
-We also provide the dataset through [Google Drive](https://github.com/google-research/deeplab2)
-
-## Model Zoo
-
 
 ### VIPSeg VPS
 
@@ -92,68 +84,11 @@ We also provide the dataset through [Google Drive](https://github.com/google-res
 </tr>
 </tbody></table>
 
-### KITTI-STEP VPS
-
-#### Near-online (pretrained model: [Cityscape](https://drive.google.com/drive/folders/1u-VBjkrPRP2NiFOVF15Lmd01ZDALVwsx?usp=sharing))
-
-<table><tbody>
-<!-- START TABLE -->
-<!-- TABLE HEADER -->
-<th valign="bottom">Backbone</th>
-<th valign="bottom">SQ</th>
-<th valign="bottom">AQ</th>
-<th valign="bottom">STQ</th>
-<th valign="bottom">ckpt</th>
-<!-- TABLE BODY -->
- <!-- <tr><td align="left"><a href="./configs/coco/panoptic_segmentation/kmax_r50.yaml">ResNet-50</td> -->
- <tr><td align="left">ResNet-50</td>
-<td align="center"> 74.2 </td>
-<td align="center"> 74.2 </td>
-<td align="center"> 74.2 </td>
-<td align="center"><a href="">download</a></td>
-</tr>
-<!-- <tr align="center"> ConvNeXt-Large </td> -->
- <tr><td align="left">ConvNeXt-Large</td>
-<td align="center"> 79.0 </td>
-<td align="center"> 78.8 </td>
-<td align="center"> 78.9 </td>
-<td align="center"><a href="">download</a></td>
-</tr>
-</tbody></table>
-
-#### Online (pretrained model: [Cityscape pseudo video](https://drive.google.com/drive/folders/1y_F8gJfZ2u9oDhqJy2y61FfpOBFGDWk7?usp=sharing))
-
-<table><tbody>
-<!-- START TABLE -->
-<!-- TABLE HEADER -->
-<th valign="bottom">Backbone</th>
-<th valign="bottom">SQ</th>
-<th valign="bottom">AQ</th>
-<th valign="bottom">STQ</th>
-<th valign="bottom">ckpt</th>
-<!-- TABLE BODY -->
- <!-- <tr><td align="left"><a href="./configs/coco/panoptic_segmentation/kmax_r50.yaml">ResNet-50</td> -->
-<!-- <tr align="center"> ResNet-50 </td> -->
- <tr><td align="left">ResNet-50</td>
-<td align="center"> 75.0 </td>
-<td align="center"> 72.0 </td>
-<td align="center"> 73.5 </td>
-<td align="center"><a href="">download</a></td>
-</tr>
- <tr><td align="left">ConvNeXt-Large</td>
-<td align="center"> 77.2 </td>
-<td align="center"> 75.7 </td>
-<td align="center"> 76.5 </td>
-<td align="center"><a href="">download</a></td>
-</tr>
-</tbody></table>
 
 ## Citing Video-kMaX
 
 If you find this code helpful in your research or wish to refer to the baseline
 results, please use the following BibTeX entry.
-
-(current BibTeX is for arxiv. We will replace it with WACV version after proceeding)
 
 ```
 @misc{shin2023videokmax,
